@@ -1,7 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useResultContexts } from "../context/ResultContextProvider";
+import { useDispatch, useSelector } from "react-redux";
+import { addSongRequest } from "../Redux/actions/songAddAction";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
 
 const formStyle = css`
   padding: 1.5rem;
@@ -58,13 +62,37 @@ const buttonStyle = css`
 `;
 
 const AddSong = () => {
-  const { newSong, setNewSong, handleNewSongSubmit } = useResultContexts();
+  const [newSong, setNewSong] = useState({
+    Title: "",
+    Artist: "",
+    Album: "",
+    Genre: "",
+  });
   const { Title, Artist, Album, Genre } = newSong;
-  const { genres } = useResultContexts();
+
+  const result = useSelector((state) => state);
+  console.log(result);
+
+  const dispatch = useDispatch();
+
+  const genres = ["HipHop", "Pop", "Country", "Reggae", "AfroBeats"];
   const navigate = useNavigate();
 
+  const handleSongSubmit = (e) => {
+    e.preventDefault();
+    const song = {
+      Title: e.target.title.value,
+      Genre: e.target.genre.value,
+      Album: e.target.album.value,
+      Artist: e.target.artist.value,
+    };
+    dispatch(addSongRequest(song));
+    toast.success("Song added successfully.");
+    navigate("/");
+  };
+
   return (
-    <form css={formStyle} onSubmit={handleNewSongSubmit}>
+    <form css={formStyle} onSubmit={handleSongSubmit}>
       <div css={fieldStyle}>
         <label htmlFor="title" css={labelStyle}>
           Title

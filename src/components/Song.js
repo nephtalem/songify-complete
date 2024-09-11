@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useResultContexts } from "../context/ResultContextProvider";
 import ConfirmationModal from "./ConfirmationModal";
+import { useDispatch } from "react-redux";
+import { deleteSongRequest } from "../Redux/actions/songDelete";
+import { updateSongRequest } from "../Redux/actions/songUpdateAction";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Song = ({ Album, Artist, Genre, Title, _id }) => {
-  const { handleDelete, genres, songResults, handleUpdate } =
-    useResultContexts();
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -15,17 +17,34 @@ const Song = ({ Album, Artist, Genre, Title, _id }) => {
     album: Album,
   });
 
+  const genres = ["HipHop", "Pop", "Country", "Reggae", "AfroBeats"];
+  const dispatch = useDispatch();
+
   const { title, genre, artist, album } = editSong;
 
   const confirmDelete = () => {
-    handleDelete(_id);
+    dispatch(deleteSongRequest(_id));
+    // handleDelete(_id);
     setShowModal(false);
+  };
+
+  const handleSongUpdate = (e, _id) => {
+    e.preventDefault();
+    const song = {
+      Title: e.target.elements.title.value,
+      Artist: e.target.elements.artist.value,
+      Album: e.target.elements.album.value,
+      Genre: e.target.elements.genre.value,
+    };
+
+    dispatch(updateSongRequest(_id, song));
+    toast.success("Song updated successfully");
   };
 
   return (
     <div className="p-4 shadow-md rounded-lg max-sm:max-w-72 sm:w-3/4 border-2 max-h-80">
       {isEditing ? (
-        <form onSubmit={(e) => (handleUpdate(e, _id), setIsEditing(false))}>
+        <form onSubmit={(e) => (handleSongUpdate(e, _id), setIsEditing(false))}>
           {/* Form fields and buttons */}
           <div className="mb-4 flex justify-between items-center">
             <label htmlFor="title">Title</label>

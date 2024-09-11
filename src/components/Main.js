@@ -1,16 +1,21 @@
-import SongList from "./SongList";
-import { useResultContexts } from "../context/ResultContextProvider";
-import Loading from "./Loading";
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 import LocalRoutes from "./LocalRoutes";
 
-const Main = () => {
-  const { isLoading } = useResultContexts();
+// Styled Section using Emotion
+const Section = styled.section`
+  height: 100vh; /* Full viewport height */
+  width: 100%; /* Full width on small screens */
+  overflow-y: scroll; /* Enable vertical scrolling */
+`;
 
-  console.log(isLoading);
+const Main = () => {
   return (
-    <section className=" h-[calc(100vh-4rem)]  sm:w-full overflow-y-scroll">
-      {isLoading ? <Loading /> : <LocalRoutes />}
-    </section>
+    <Section>
+      <LocalRoutes />
+    </Section>
   );
 };
+
 export default Main;

@@ -16,17 +16,21 @@ const drawerStyle = css`
   flex-direction: column;
   justify-content: center;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
   z-index: 1000;
+  transform: translateX(-100%); /* Hidden by default on mobile */
+  transition: transform 0.3s ease-in-out;
+
+  @media (min-width: 769px) {
+    transform: translateX(0); /* Always visible on larger screens */
+  }
 `;
 
 const drawerOpenStyle = css`
-  transform: translateX(0);
+  transform: translateX(0); /* Slide in on mobile when opened */
 `;
 
 const toggleButtonStyle = css`
-  position: fixed;
+  position: absolute;
   top: 1rem;
   left: 1rem;
   background: #4f46e5;
@@ -40,6 +44,10 @@ const toggleButtonStyle = css`
   transition: background 0.3s ease;
   &:hover {
     background: #3b82f6;
+  }
+
+  @media (min-width: 769px) {
+    display: none; /* Hide the toggle button on larger screens */
   }
 `;
 
@@ -73,12 +81,12 @@ const linkStyle = css`
 
 const contentStyle = css`
   transition: margin-left 0.3s ease;
-  margin-left: 0;
-  padding: 1rem;
-`;
-
-const contentShiftStyle = css`
   margin-left: 250px;
+  padding: 1rem;
+
+  @media (max-width: 768px) {
+    margin-left: 0; /* No margin on smaller screens */
+  }
 `;
 
 const SideBar = () => {
@@ -99,7 +107,7 @@ const SideBar = () => {
             to="/"
             css={linkStyle}
             className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={toggleDrawer}
+            onClick={toggleDrawer} // Close the drawer after selecting a link
           >
             🏠 Home
           </NavLink>
@@ -121,7 +129,7 @@ const SideBar = () => {
           </NavLink>
         </ul>
       </section>
-      <main css={[contentStyle, isOpen && contentShiftStyle]}>
+      <main css={contentStyle}>
         {/* The main content of your app goes here */}
       </main>
     </>

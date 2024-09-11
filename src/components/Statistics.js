@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import React from "react";
-import { useResultContexts } from "../context/ResultContextProvider";
+import React, { useEffect } from "react";
 import { Bar, Pie, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -13,6 +12,8 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStatisticsRequest } from "../Redux/actions/songStatisticsAction";
 
 // Registering Chart.js components
 ChartJS.register(
@@ -104,17 +105,26 @@ const errorStyle = css`
 `;
 
 const Statistics = () => {
-  const { statistics, statsLoading, statsError } = useResultContexts();
+  const dispatch = useDispatch();
+  const result = useSelector (state => state.songStatistics)
+  const {loading, error, statistics} = result
 
-  if (statsLoading)
+
+  console.log(statistics)
+
+  useEffect(() => {
+    dispatch(fetchStatisticsRequest())
+  }, [dispatch]);
+
+  if (loading)
     return (
       <div css={loadingStyle}>
         <div className="w-16 h-16 border-4 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
       </div>
     );
-  if (statsError)
+  if (error)
     return (
-      <div css={errorStyle}>Error loading statistics: {statsError.message}</div>
+      <div css={errorStyle}>Error loading statistics: {error.message}</div>
     );
 
   // Prepare chart data with distinct colors
